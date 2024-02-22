@@ -9,30 +9,13 @@ Options:
     -h Help doc.
 '''
 
-# API
-
-'''
-
-API Prefix: https://photo.runart.net
-
-Authentication:
-- Put token in cookie
-  - Example: {'token': token, 'type': 'cli'}
-
-Endpoints:
-- POST: /upload/ -- upload photos, use multipart form with 'file' component
-- GET: /build/photographer/ -- build single photographer's photo list
-- GET: /build/index/ -- update index to include this photographer
-
-'''
-
 import requests
 import os
 import docopt
 import logging
 
-#API_PREFIX = 'http://localhost:8080' # test
-API_PREFIX = 'https://photo.runart.net/'
+API_PREFIX = 'http://localhost:8080' # test
+#API_PREFIX = 'https://photo.hupili.net/'
 
 def api_request(method, api_path, token, *args, **kwargs):
     api_url = f'{API_PREFIX}/{api_path}'
