@@ -14,8 +14,8 @@ import os
 import docopt
 import logging
 
-API_PREFIX = 'http://localhost:8080' # test
-#API_PREFIX = 'https://photo.hupili.net/'
+#API_PREFIX = 'http://localhost:8080' # test
+API_PREFIX = 'https://photo.hupili.net/'
 
 def api_request(method, api_path, token, *args, **kwargs):
     api_url = f'{API_PREFIX}/{api_path}'
