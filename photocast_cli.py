@@ -14,7 +14,18 @@ import os
 import docopt
 import logging
 
+
+ALLOWED_EXTENSIONS = [
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.JPG',
+    '.heic',
+    '.HEIC',
+]
+
 logging.basicConfig(level=logging.INFO)
+
 
 if os.environ.get('DEBUG', None) == 'True':
     # Dev server. Change to your flask settings.
@@ -23,6 +34,7 @@ if os.environ.get('DEBUG', None) == 'True':
 else:
     API_PREFIX = 'https://photo.runart.net/'
     logging.info(f'Use prod API: {API_PREFIX}')
+
 
 def api_request(method, api_path, token, *args, **kwargs):
     api_url = f'{API_PREFIX}/{api_path}'
@@ -45,28 +57,32 @@ def post_photo(token, photo_path):
 
 def post_folder(token, photo_folder):
     count = 0
-    for fn in os.listdir(photo_folder):
+    files = os.listdir(photo_folder)
+    len_files = len(files)
+    for fn in files:
         count += 1
-        print(f'Upload photo {count}')
+        logging.info(f'Upload photo: {count} / {len_files}')
         photo_path = f'{photo_folder}/{fn}'
-        print('post photo:', photo_path)
-        try:
-            r = post_photo(token, photo_path)
-            print('result:')
-            print(r)
-        except Exception as e:
-            logging.warning(f'Exception: {e}')
+        logging.info(f'post photo: {photo_path}')
+        if any(fn.endswith(ext) for ext in ALLOWED_EXTENSIONS):
+            try:
+                r = post_photo(token, photo_path)
+                logging.info(f'Upload result: {r}')
+            except Exception as e:
+                logging.warning(f'Exception: {e}')
+        else:
+            logging.info(f'Not supported extension. Skip.')
 
 
 def build_photographer(token):
     r = api_request('get', 'build/photographer/', token)
-    print(r)
+    logging.info(f'build_photographer: {r}')
     return r
 
 
 def build_index(token):
     r = api_request('get', 'build/index/', token)
-    print(r)
+    logging.info(f'build_index: {r}')
     return r
 
 
