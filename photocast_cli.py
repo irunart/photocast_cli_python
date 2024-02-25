@@ -14,8 +14,15 @@ import os
 import docopt
 import logging
 
-#API_PREFIX = 'http://localhost:8080' # test
-API_PREFIX = 'https://photo.hupili.net/'
+logging.basicConfig(level=logging.INFO)
+
+if os.environ.get('DEBUG', None) == 'True':
+    # Dev server. Change to your flask settings.
+    API_PREFIX = 'http://localhost:8080'
+    logging.info(f'Use dev API: {API_PREFIX}')
+else:
+    API_PREFIX = 'https://photo.runart.net/'
+    logging.info(f'Use prod API: {API_PREFIX}')
 
 def api_request(method, api_path, token, *args, **kwargs):
     api_url = f'{API_PREFIX}/{api_path}'
