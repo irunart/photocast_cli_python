@@ -2,6 +2,7 @@
 
 Usage:
     photocast_cli.py upload <token> <folder>
+    photocast_cli.py test <token> <input_file>
     photocast_cli.py build photographer <token>
     photocast_cli.py build index <token>
 
@@ -55,6 +56,15 @@ def post_photo(token, photo_path):
     return r
 
 
+def post_photo_test(token, photo_path):
+    '''
+    A token is binded to a photographer, aka label, i.e. race-name-location.
+    '''
+    files = {'file': open(photo_path, 'rb')}
+    r = api_request('post', 'upload', token, files=files, params={'test': 'true'})
+    return r
+
+
 def post_folder(token, photo_folder):
     count = 0
     files = os.listdir(photo_folder)
@@ -101,3 +111,11 @@ if __name__ == '__main__':
         elif arguments['index']:
             token = arguments['<token>']
             build_index(token)
+    elif arguments['test']:
+        print('Test photo upload.')
+        token = arguments['<token>']
+        input_file = arguments['<input_file>']
+        ret = post_photo_test(token, input_file)
+        print(ret)
+        url = f'https://storage.googleapis.com/photocast/{ret["filename"]}'
+        print(f'Visit the uploaded image at following URL: {url}')
