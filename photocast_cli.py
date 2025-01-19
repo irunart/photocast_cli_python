@@ -89,11 +89,11 @@ def post_folder(token, photo_folder):
     task_queue = [(token, os.path.join(photo_folder, f), len_files, i+1) for i, f in enumerate(files)]
     pool = Pool(16)
     jobs = pool.map(upload_arg_func, task_queue)
-    jobs = [j for j in jobs if j is not True]
+    jobs = [j for j in jobs if isinstance(j, str)]
     logging.info(f'processing failed jobs: {jobs}')
-    for j in jobs:
+    for i, j in enumerate(jobs):
         loop_count = 0
-        while upload_file(token, j, len_files, 0)!=True and loop_count<3:
+        while upload_file(token, j, len(jobs), i)!=True and loop_count<3:
             logging.info(f'Upload failed job: {j}, retrying...{loop_count+1}') 
     pool.close()
 
