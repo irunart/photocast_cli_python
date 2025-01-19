@@ -1,6 +1,17 @@
 # photocast_cli_python
 
-Python CLI for PhotoCast system
+Python CLI for PhotoCast system:
+## Install
+
+
+```cmd
+git clone https://github.com/irunart/photocast_cli_python.git
+cd ./photocast_cli_python
+conda create -n irun
+conda activate irun
+conda install docopt
+conda install requests
+```
 
 ## PhotoCast CLI
 
@@ -33,3 +44,21 @@ Endpoints:
 - `POST: /upload/` -- upload photos, use multipart form with 'file' component
 - `GET: /build/photographer/` -- build single photographer's photo list
 - `GET: /build/index/` -- update index to include this photographer
+
+## Example of Usage
+Your path could be arranged as:
+./
+---Imgs
+------image_1.jpg
+------image_2.jpg
+------ ···
+------image_N.jpg
+---pytotocat_cli_python
+------photocast_cli.py
+
+If you want to upload a folder of images, you can use:
+```
+cd pytotocat_cli_python
+conda activate irun
+python photocast_cli.py upload your_token ../Imgs
+```
