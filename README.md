@@ -47,6 +47,7 @@ Endpoints:
 
 ## Example of Usage
 Your path could be arranged as:
+```
 ./
 ---Imgs
 ------image_1.jpg
@@ -55,9 +56,9 @@ Your path could be arranged as:
 ------image_N.jpg
 ---pytotocat_cli_python
 ------photocast_cli.py
-
-If you want to upload a folder of images, you can use:
 ```
+If you want to upload a folder of images, you can use:
+```cmd
 cd pytotocat_cli_python
 conda activate irun
 python photocast_cli.py upload your_token ../Imgs
