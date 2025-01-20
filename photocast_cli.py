@@ -2,6 +2,7 @@
 
 Usage:
     photocast_cli.py upload <token> <folder>
+    photocast_cli.py upload_from_drive <token>
     photocast_cli.py test <token> <input_file>
     photocast_cli.py build photographer <token>
     photocast_cli.py build index <token>
@@ -55,6 +56,9 @@ def post_photo(token, photo_path):
     r = api_request('post', 'upload', token, files=files)
     return r
 
+def upload_photo_from_drive(token):
+    r = api_request('post', '/upload/drive/', token)
+    return r
 
 def post_photo_test(token, photo_path):
     '''
@@ -104,6 +108,12 @@ if __name__ == '__main__':
         token = arguments['<token>']
         folder = arguments['<folder>']
         post_folder(token, folder)
+    elif arguments['upload_from_drive']:
+        print('Uploading from Google Drive')
+        token = arguments['<token>']
+        r = upload_photo_from_drive(token)
+        print(r)
+        print('Number of results:', len(r['result']['results']))
     elif arguments['build']:
         if arguments['photographer']:
             token = arguments['<token>']
