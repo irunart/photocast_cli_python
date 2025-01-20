@@ -15,7 +15,7 @@ import requests
 import os
 import docopt
 import logging
-
+from multiprocessing.pool import Pool
 
 ALLOWED_EXTENSIONS = [
     '.jpg',
@@ -68,24 +68,38 @@ def post_photo_test(token, photo_path):
     r = api_request('post', 'upload', token, files=files, params={'test': 'true'})
     return r
 
+def upload_arg_func(arg):
+    upload_file(*arg)
 
+def upload_file(token, pf, len_files, i):
+    logging.info(f'Upload photo ID: {i} / {len_files}')
+    logging.info(f'post photo: {pf}')
+    if any(pf.endswith(ext) for ext in ALLOWED_EXTENSIONS):
+        try:
+            r = post_photo(token, pf)
+            logging.info(f'Upload result: {r}')
+            return True
+        except Exception as e:
+            logging.warning(f'Exception: {e}')
+            return pf
+    else:
+        logging.info(f'Not supported extension. Skip.')
+        return True
+    
 def post_folder(token, photo_folder):
-    count = 0
     files = os.listdir(photo_folder)
     len_files = len(files)
-    for fn in files:
-        count += 1
-        logging.info(f'Upload photo: {count} / {len_files}')
-        photo_path = f'{photo_folder}/{fn}'
-        logging.info(f'post photo: {photo_path}')
-        if any(fn.endswith(ext) for ext in ALLOWED_EXTENSIONS):
-            try:
-                r = post_photo(token, photo_path)
-                logging.info(f'Upload result: {r}')
-            except Exception as e:
-                logging.warning(f'Exception: {e}')
-        else:
-            logging.info(f'Not supported extension. Skip.')
+
+    task_queue = [(token, os.path.join(photo_folder, f), len_files, i+1) for i, f in enumerate(files)]
+    pool = Pool(16)
+    jobs = pool.map(upload_arg_func, task_queue)
+    jobs = [j for j in jobs if isinstance(j, str)]
+    logging.info(f'processing failed jobs: {jobs}')
+    for i, j in enumerate(jobs):
+        loop_count = 0
+        while upload_file(token, j, len(jobs), i)!=True and loop_count<3:
+            logging.info(f'Upload failed job: {j}, retrying...{loop_count+1}') 
+    pool.close()
 
 
 def build_photographer(token):
