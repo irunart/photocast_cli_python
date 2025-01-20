@@ -98,6 +98,7 @@ def post_folder(token, photo_folder):
     for i, j in enumerate(jobs):
         loop_count = 0
         while upload_file(token, j, len(jobs), i)!=True and loop_count<3:
+            loop_count += 1
             logging.info(f'Upload failed job: {j}, retrying...{loop_count+1}') 
     pool.close()
 
