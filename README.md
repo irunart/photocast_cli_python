@@ -62,4 +62,6 @@ If you want to upload a folder of images, you can use:
 cd pytotocat_cli_python
 conda activate irun
 python photocast_cli.py upload your_token ../Imgs
+python photocast_cli.py build photographer your_token
+python photocast_cli.py build index your_token
 ```
